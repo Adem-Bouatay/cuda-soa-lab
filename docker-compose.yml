@@ -7,7 +7,7 @@ services:
     container_name: gpu-matrix-service
     ports:
       - "${STUDENT_PORT:-8699}:${STUDENT_PORT:-8699}"
-      - "8000:8000"
+      - "9000:8000"
     environment:
       - STUDENT_PORT=${STUDENT_PORT:-8699}
       - NUMBA_CUDA_DRIVER=/usr/lib/x86_64-linux-gnu/libcuda.so

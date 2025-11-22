@@ -51,7 +51,7 @@ pipeline {
                     docker run --gpus all \
                         -d \
                         -p ${STUDENT_PORT}:${STUDENT_PORT} \
-                        -p 8000:8000 \
+                        -p 9000:8000 \
                         --name ${CONTAINER_NAME} \
                         --restart unless-stopped \
                         ${IMAGE_NAME}:latest
