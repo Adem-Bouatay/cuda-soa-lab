@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'gpu-service'
-        CONTAINER_NAME = 'gpu-matrix-service'
+        IMAGE_NAME = 'gpu-service-adem'
+        CONTAINER_NAME = 'gpu-matrix-service-adem'
         STUDENT_PORT = '8799'  // Change this to your assigned port
     }
 
