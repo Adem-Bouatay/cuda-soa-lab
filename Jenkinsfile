@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = 'gpu-service'
         CONTAINER_NAME = 'gpu-matrix-service'
-        STUDENT_PORT = '8699'  // Change this to your assigned port
+        STUDENT_PORT = '8799'  // Change this to your assigned port
     }
 
     stages {
@@ -51,7 +51,7 @@ pipeline {
                     docker run --gpus all \
                         -d \
                         -p ${STUDENT_PORT}:${STUDENT_PORT} \
-                        -p 9000:8000 \
+                        -p 8000:8000 \
                         --name ${CONTAINER_NAME} \
                         --restart unless-stopped \
                         ${IMAGE_NAME}:latest
