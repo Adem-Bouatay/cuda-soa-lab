@@ -3,13 +3,13 @@ version: "3.8"
 services:
   gpu-service:
     build: .
-    image: gpu-service
-    container_name: gpu-matrix-service
+    image: gpu-service-adem
+    container_name: gpu-matrix-service-adem
     ports:
-      - "${STUDENT_PORT:-8799}:${STUDENT_PORT:-8799}"
+      - "${STUDENT_PORT:-8069}:${STUDENT_PORT:-8069}"
       - "8000:8000"
     environment:
-      - STUDENT_PORT=${STUDENT_PORT:-8799}
+      - STUDENT_PORT=${STUDENT_PORT:-8069}
       - NUMBA_CUDA_DRIVER=/usr/lib/x86_64-linux-gnu/libcuda.so
     deploy:
       resources:
@@ -25,7 +25,7 @@ services:
           "CMD",
           "python3",
           "-c",
-          "import urllib.request; urllib.request.urlopen('http://localhost:${STUDENT_PORT:-8799}/health')",
+          "import urllib.request; urllib.request.urlopen('http://localhost:${STUDENT_PORT:-8069}/health')",
         ]
       interval: 30s
       timeout: 10s
