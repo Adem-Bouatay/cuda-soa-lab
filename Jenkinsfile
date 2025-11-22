@@ -13,7 +13,7 @@ pipeline {
             steps {
                 echo 'Installing required dependencies for cuda_test'
                 sh '''
-                    python3 -m pip install --user numpy numba-cuda[cu12]
+                    python3 -m pip install --user --break-system-packages numpy numba-cuda[cu12]
                 '''
                 echo 'Running CUDA sanity check...'
                 sh '''
