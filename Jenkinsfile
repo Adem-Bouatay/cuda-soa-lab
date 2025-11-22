@@ -12,7 +12,8 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo '📦 Checking out source code...'
-                checkout scm
+                git branch: 'master',
+                    url: 'https://github.com/Adem-Bouatay/cuda-soa-lab.git'
             }
         }
         
