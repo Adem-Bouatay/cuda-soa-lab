@@ -6,10 +6,10 @@ services:
     image: gpu-service
     container_name: gpu-matrix-service
     ports:
-      - "${STUDENT_PORT:-8020}:${STUDENT_PORT:-8020}"
+      - "${STUDENT_PORT:-8699}:${STUDENT_PORT:-8699}"
       - "8000:8000"
     environment:
-      - STUDENT_PORT=${STUDENT_PORT:-8020}
+      - STUDENT_PORT=${STUDENT_PORT:-8699}
       - NUMBA_CUDA_DRIVER=/usr/lib/x86_64-linux-gnu/libcuda.so
     deploy:
       resources:
@@ -20,9 +20,14 @@ services:
               capabilities: [gpu]
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:${STUDENT_PORT:-8020}/health')"]
+      test:
+        [
+          "CMD",
+          "python3",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:${STUDENT_PORT:-8699}/health')",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 5s
-
