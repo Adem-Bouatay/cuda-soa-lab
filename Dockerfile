@@ -22,16 +22,16 @@ COPY matrix1.npz .
 COPY matrix2.npz .
 
 # Expose ports
-# 8001 for FastAPI service (change to your student port)
+# 8699 for FastAPI service (change to your student port)
 # 8000 for Prometheus metrics (if needed later)
-EXPOSE 8001 8000
+EXPOSE 8699 8000
 
 # Set environment variable for CUDA
 ENV NUMBA_CUDA_DRIVER=/usr/lib/x86_64-linux-gnu/libcuda.so
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python3 -c "import urllib.request; urllib.request.urlopen('http://localhost:8001/health')" || exit 1
+    CMD python3 -c "import urllib.request; urllib.request.urlopen('http://localhost:8699/health')" || exit 1
 
 # Run the application
 CMD ["python3", "main.py"]

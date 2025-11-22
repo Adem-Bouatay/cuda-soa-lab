@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = 'gpu-service'
         CONTAINER_NAME = 'gpu-matrix-service'
-        STUDENT_PORT = '8020'  // Change this to your assigned port
+        STUDENT_PORT = '8699'  // Change this to your assigned port
     }
 
     stages {
