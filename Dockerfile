@@ -15,12 +15,15 @@ RUN apt-get update && apt-get install -y \
     python3.12 \
     python3.12-dev \
     python3.12-venv \
-    python3-pip \
+    python3.12-distutils \
     && rm -rf /var/lib/apt/lists/*
 
 # Set Python 3.12 as default
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.12 1
+
+# Install pip for Python 3.12
+RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.12
 
 # Upgrade pip
 RUN python3.12 -m pip install --no-cache-dir --upgrade pip setuptools wheel
@@ -34,12 +37,12 @@ COPY cuda_test.py .
 RUN pip install --no-cache-dir -e .
 
 # Expose port for FastAPI (default 8001, can be overridden)
-EXPOSE 8001
+EXPOSE 8699
 EXPOSE 8000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8001/health || exit 1
+    CMD curl -f http://localhost:8699/health || exit 1
 
 # Run the application
 CMD ["python", "main.py"]
