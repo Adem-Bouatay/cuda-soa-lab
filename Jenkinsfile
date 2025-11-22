@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        STUDENT_PORT = "8001"
+        STUDENT_PORT = "8699"
         IMAGE_NAME = "gpu-matrix-service"
         CONTAINER_NAME = "gpu-matrix-${STUDENT_PORT}"
     }
@@ -11,12 +11,20 @@ pipeline {
 
         stage('GPU Sanity Test') {
             steps {
+                echo 'Creating virtual environment'
+                sh '''
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    python3 -m pip install --upgrade pip
+                '''
                 echo 'Installing required dependencies for cuda_test'
                 sh '''
-                    python3 -m pip install --user --break-system-packages numpy numba-cuda[cu12]
+                    . venv/bin/activate
+                    pip install numpy numba-cuda[cu12]
                 '''
                 echo 'Running CUDA sanity check...'
                 sh '''
+                    . venv/bin/activate
                     python3 cuda_test.py
                 '''
             }
