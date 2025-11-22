@@ -1,44 +1,37 @@
-FROM nvidia/cuda:12.3.1-runtime-ubuntu22.04
+FROM nvidia/cuda:12.0.0-runtime-ubuntu22.04
 
 # Set working directory
 WORKDIR /app
 
-# Prevent interactive prompts during installation
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install Python 3.12 and dependencies
+# Install Python and system dependencies
 RUN apt-get update && apt-get install -y \
-    software-properties-common \
-    curl \
-    && add-apt-repository ppa:deadsnakes/ppa \
-    && apt-get update && apt-get install -y \
-    python3.12 \
-    python3.12-dev \
-    python3.12-venv \
+    python3.10 \
+    python3-pip \
+    nvidia-utils-535 \
     && rm -rf /var/lib/apt/lists/*
 
-# Set Python 3.12 as default
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.12 1
+# Copy requirements first for better caching
+COPY requirements.txt .
 
-# Install pip for Python 3.12 (includes setuptools)
-RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.12
+# Install Python dependencies
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-# Copy project files
-COPY pyproject.toml .
+# Copy application files
 COPY main.py .
-COPY cuda_test.py .
+COPY matrix1.npz .
+COPY matrix2.npz .
 
-# Install Python dependencies from pyproject.toml
-RUN pip install --no-cache-dir -e .
+# Expose ports
+# 8001 for FastAPI service (change to your student port)
+# 8000 for Prometheus metrics (if needed later)
+EXPOSE 8001 8000
 
-# Expose port for FastAPI (default 8001, can be overridden)
-EXPOSE 8699
-EXPOSE 8000
+# Set environment variable for CUDA
+ENV NUMBA_CUDA_DRIVER=/usr/lib/x86_64-linux-gnu/libcuda.so
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8699/health || exit 1
+    CMD python3 -c "import urllib.request; urllib.request.urlopen('http://localhost:8001/health')" || exit 1
 
 # Run the application
-CMD ["python", "main.py"]
+CMD ["python3", "main.py"]

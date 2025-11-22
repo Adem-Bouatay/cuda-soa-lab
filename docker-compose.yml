@@ -3,13 +3,14 @@ version: "3.8"
 services:
   gpu-service:
     build: .
+    image: gpu-service
     container_name: gpu-matrix-service
     ports:
-      - "8001:8001" # Change to your student port
-      - "8000:8000" # Metrics port
+      - "${STUDENT_PORT:-8020}:${STUDENT_PORT:-8020}"
+      - "8000:8000"
     environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - STUDENT_PORT=${STUDENT_PORT:-8020}
+      - NUMBA_CUDA_DRIVER=/usr/lib/x86_64-linux-gnu/libcuda.so
     deploy:
       resources:
         reservations:
@@ -18,15 +19,10 @@ services:
               count: all
               capabilities: [gpu]
     restart: unless-stopped
-    volumes:
-      - ./logs:/app/logs
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:${STUDENT_PORT:-8020}/health')"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 10s
+      start_period: 5s
 
-networks:
-  default:
-    name: gpu-services
